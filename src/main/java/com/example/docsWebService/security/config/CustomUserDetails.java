@@ -13,14 +13,16 @@ import java.util.List;
 public class CustomUserDetails extends UserCredential implements UserDetails {
     private String username;
     private String password;
+    private String email;
     Collection<? extends GrantedAuthority> authorities;
 
-    public CustomUserDetails(UserCredential byUsername) {
-        this.username = byUsername.getUsername();
-        this.password= byUsername.getPassword();
+    public CustomUserDetails(UserCredential userCredential) {
+        this.username = userCredential.getUsername();
+        this.password= userCredential.getPassword();
+        this.email = userCredential.getEmail();
         List<GrantedAuthority> auths = new ArrayList<>();
 
-        for(UserRole role : byUsername.getRoles()){
+        for(UserRole role : userCredential.getRoles()){
 
             auths.add(new SimpleGrantedAuthority(role.getName().toUpperCase()));
         }
@@ -42,6 +44,10 @@ public class CustomUserDetails extends UserCredential implements UserDetails {
         return username;
     }
 
+    @Override
+    public String getEmail() {
+        return email;
+    }
     @Override
     public boolean isAccountNonExpired() {
         return true;
