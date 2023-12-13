@@ -16,7 +16,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class DocSenderService {
 
-    private final RestTemplate restTemplate;
+   private final RestTemplate restTemplate;
 
 
     public String uploadFile(MultipartFile file, MultiValueMap<String, Object> additionalFormParams) {
@@ -41,7 +41,7 @@ public class DocSenderService {
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(parts, headers);
-//            ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+           restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
 
             return "File uploaded successfully";
 
