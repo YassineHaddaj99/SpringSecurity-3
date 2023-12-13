@@ -21,10 +21,16 @@ public class UserCredential {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")
+
     private long id;
     private String username;
+
     @JsonIgnore
     private String password;
+
+    @Column(name = "Email")
+    private String email;
+
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<UserRole> roles = new HashSet<>();
 

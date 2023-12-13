@@ -36,17 +36,11 @@ public class AuthController {
     }
 
     @PostMapping("v1/login")
-    public JwtResponseDTO AuthenticateAndGetToken(@RequestBody AuthRequest authRequestDTO){
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequestDTO.getUsername(), authRequestDTO.getPassword()));
-        if(authentication.isAuthenticated()){
-            return JwtResponseDTO.builder()
-                    .accessToken(jwtService.GenerateToken(authRequestDTO.getUsername())).build();
-        } else {
-            System.out.print("not working BITCH");
-
-            throw new UsernameNotFoundException("invalid user request..!!");
-        }
+    @ResponseStatus(HttpStatus.OK)
+    public AuthResponse login2(@RequestBody AuthRequest authRequest) {
+        return authService.AuthenticateAndGetToken(authRequest);
     }
+
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/ping")

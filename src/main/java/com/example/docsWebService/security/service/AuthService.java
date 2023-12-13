@@ -16,6 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 @RequiredArgsConstructor
@@ -39,13 +40,28 @@ public class AuthService {
         return userResponse;
     }
 
+    public AuthResponse AuthenticateAndGetToken(@RequestBody AuthRequest authRequestDTO){
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequestDTO.getUsername(), authRequestDTO.getPassword()));
+        if(authentication.isAuthenticated()){
+            AuthResponse authResponse = new AuthResponse();
+            authResponse.setUserId(((CustomUserDetails) authentication.getPrincipal()).getId());
+            authResponse.setUsername(((CustomUserDetails) authentication.getPrincipal()).getUsername());
+            authResponse.setEmail(((CustomUserDetails) authentication.getPrincipal()).getEmail());
+            authResponse.setToken(generateToken(authRequestDTO.getUsername()));
+            authResponse.setRefreshToken(generateRefreshToken(authRequestDTO.getUsername()));
+            return authResponse;
+        } else {
+            throw new AuthenticationFailedException("invalid credentials");
+        }
+    }
+
     public AuthResponse login(AuthRequest authRequest) {
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
         if (authenticate.isAuthenticated()) {
             AuthResponse authResponse = new AuthResponse();
             authResponse.setUserId(((CustomUserDetails) authenticate.getPrincipal()).getId());
             authResponse.setUsername(((CustomUserDetails) authenticate.getPrincipal()).getUsername());
-           // authResponse.setEmail(((CustomUserDetails) authenticate.getPrincipal()).getEmail());
+            authResponse.setEmail(((CustomUserDetails) authenticate.getPrincipal()).getEmail());
            // authResponse.setToken(generateToken(authRequest.getUsername()));
            // authResponse.setRefreshToken(generateRefreshToken(authRequest.getUsername()));
 
@@ -53,6 +69,21 @@ public class AuthService {
         } else {
             throw new AuthenticationFailedException("invalid credentials");
         }
+    }
+    public String generateToken(String username) {
+        return jwtService.generateToken(username);
+    }
+
+    private String generateRefreshToken(String username) {
+        return jwtService.generateRefreshToken(username);
+    }
+
+    public Boolean validateToken(String token) {
+        return jwtService.validateToken(token);
+    }
+
+    public Boolean validateRefreshToken(String refreshToken) {
+        return jwtService.validateRefreshToken(refreshToken);
     }
 
 
