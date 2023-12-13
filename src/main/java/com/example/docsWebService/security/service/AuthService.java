@@ -11,6 +11,7 @@ import com.example.docsWebService.security.repository.UserCredentialRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class AuthService {
     private final UserCredentialRepository repository;
     private final PasswordEncoder passwordEncoder;
+    @Autowired
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
