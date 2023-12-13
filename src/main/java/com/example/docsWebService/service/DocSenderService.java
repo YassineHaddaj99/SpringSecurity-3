@@ -19,7 +19,7 @@ public class DocSenderService {
    private final RestTemplate restTemplate;
 
 
-    public String uploadFile(MultipartFile file, MultiValueMap<String, Object> additionalFormParams) {
+    public String uploadFile(MultipartFile file) {
         String url = "http://localhost:8081/receiver/store";
         MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
 

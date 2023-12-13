@@ -25,7 +25,7 @@ public class DocSenderController {
     ) {
         try {
             // Call the service to upload the file
-            String result = connector.uploadFile(file, additionalFormParams);
+            String result = connector.uploadFile(file);
             return ResponseEntity.ok(result);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
