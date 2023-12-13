@@ -20,8 +20,7 @@ public class DocSenderController {
 
     @PostMapping(value= "/upload",consumes = {"multipart/form-data"} )
     public ResponseEntity<String> uploadFile(
-            @RequestParam MultipartFile file,
-            @RequestParam(required = false) MultiValueMap<String, Object> additionalFormParams
+            @RequestParam MultipartFile file
     ) {
         try {
             // Call the service to upload the file
