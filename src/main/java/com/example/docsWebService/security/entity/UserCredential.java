@@ -20,15 +20,16 @@ public class UserCredential {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ID")
-
     private long id;
+
+    @Column(nullable = false)
     private String username;
 
+    @Column(nullable = false)
     @JsonIgnore
     private String password;
 
-    @Column(name = "Email")
+    @Column(nullable = false)
     private String email;
 
     @ManyToMany(fetch = FetchType.EAGER)

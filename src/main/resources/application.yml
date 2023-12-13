@@ -3,7 +3,7 @@
 spring:
   datasource:
     password: root
-    url: jdbc:postgresql://localhost:5432/user
+    url: jdbc:postgresql://localhost:5432/jwtdb
     username: root
   jpa:
     hibernate:

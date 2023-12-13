@@ -3,12 +3,10 @@ package com.example.docsWebService.security.controller;
 
 import com.example.docsWebService.security.dto.*;
 import com.example.docsWebService.security.service.AuthService;
-import com.example.docsWebService.security.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -18,7 +16,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
-    private final  AuthenticationManager authenticationManager;
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public UserResponse addNewUser(@RequestBody UserRequest userRequest) {
