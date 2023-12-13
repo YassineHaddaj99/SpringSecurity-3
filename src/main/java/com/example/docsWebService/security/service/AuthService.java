@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class AuthService {
     private final UserCredentialRepository repository;
     private final PasswordEncoder passwordEncoder;
-    @Autowired
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
