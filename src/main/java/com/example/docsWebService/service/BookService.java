@@ -1,7 +1,5 @@
 package com.example.docsWebService.service;
 
-import com.example.docsWebService.dto.AuthorRequest;
-import com.example.docsWebService.dto.AuthorResponse;
 import com.example.docsWebService.dto.BookRequest;
 import com.example.docsWebService.dto.BookResponse;
 import com.example.docsWebService.entities.Author;
@@ -21,12 +19,13 @@ public class BookService {
 
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
+    private final AuthorService authorService;
 
-    public List<BookResponse> findBooksByAuthorName(String authorName){
-    Author authorExist = authorRepository.findAuthorByName(authorName);
+        public List<BookResponse> findBooksByAuthorId(Long id){
+    Author authorExist = authorRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     if (authorExist !=null)
     {
-        List<Book> books = bookRepository.findBooksByAuthorName(authorName);
+        List<Book> books = bookRepository.findBooksByAuthorId(id);
         return  books.stream()
                 .map(this::convertBookToResponse)
                 .collect(Collectors.toList());
@@ -36,10 +35,12 @@ public class BookService {
     }
     }
 
-    public AuthorResponse createAuthor(AuthorRequest authorRequest){
-       Author author = buildAuthorFromRequest(authorRequest);
-       Author builtAuthor = authorRepository.save(author);
-       return convertAuthorToResponse(builtAuthor);
+    public List<BookResponse> findAllBooks()
+    {
+        List<Book> books = bookRepository.findAll();
+        return books.stream()
+                .map(this::convertBookToResponse)
+                .collect(Collectors.toList());
     }
 
     public BookResponse createBook(BookRequest bookRequest)
@@ -49,33 +50,38 @@ public class BookService {
         return convertBookToResponse(builtBook);
     }
 
-    public BookResponse updateBook(BookRequest bookRequest)
+    public BookResponse updateBook(Long id,BookRequest bookRequest)
     {
-        Book book = buildBookFromRequest(bookRequest);
-        Book builtBook = bookRepository.save(book);
-        return convertBookToResponse(builtBook);
+        Book book = bookRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        updateBookFromRequest(book,bookRequest);
+        Book updatedBook = bookRepository.save(book);
+        return convertBookToResponse(updatedBook);
     }
 
+    public void deleteBook(Long id)
+    {
+        bookRepository.deleteById(id);
+    }
 
-    public BookResponse convertBookToResponse(Book book)
+    private void updateBookFromRequest(Book book, BookRequest bookRequest)
+    {
+        Author authorById = authorRepository.findById(bookRequest.getAuthorId()).orElseThrow(EntityNotFoundException::new);
+        book.setName(bookRequest.getName());
+        book.setDescription(bookRequest.getDescription());
+        book.setAuthor(authorById);
+    }
+
+    private BookResponse convertBookToResponse(Book book)
     {
         return BookResponse.builder()
                 .id(book.getId())
                 .name(book.getName())
                 .description(book.getDescription())
-                .author(convertAuthorToResponse(book.getAuthor()))
+                .author(authorService.convertAuthorToResponse(book.getAuthor()))
                 .build();
     }
 
-    public AuthorResponse convertAuthorToResponse(Author author)
-    {
-        return AuthorResponse.builder()
-                .id(author.getId())
-                .name(author.getName())
-                .build();
-    }
-
-    public Book buildBookFromRequest(BookRequest bookRequest)
+    private Book buildBookFromRequest(BookRequest bookRequest)
     {
         Author authorById = authorRepository.findById(bookRequest.getAuthorId()).orElseThrow(EntityNotFoundException::new);
         return Book.builder()
@@ -85,11 +91,6 @@ public class BookService {
                 .build();
     }
 
-    public Author buildAuthorFromRequest(AuthorRequest authorRequest)
-    {
-        return Author.builder()
-                .name(authorRequest.getName())
-                .build();
-    }
+
 
 }
